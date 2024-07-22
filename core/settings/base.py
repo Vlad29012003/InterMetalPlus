@@ -8,12 +8,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG', default=True)
+DEBUG = env('DEBUG')
 
-if DEBUG:
-    from .prod import *
-else:
-    from .local import *
+# if DEBUG:
+#     from .prod import *
+# else:
+#     from .local import *
 
 # Application definition
 INSTALLED_APPS = [
@@ -81,3 +81,16 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD =env('EMAIL_HOST_PASSWORD')
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': env('POSTGRES_DB'),
+        'USER': env('POSTGRES_USER'),
+        'PASSWORD': env('POSTGRES_PASSWORD'),
+        'HOST': env('POSTGRES_HOST' , default ='localhost'),
+        'PORT': env('POSTGRES_PORT' ,default ='5432' ,cast=int)
+    }
+}
+

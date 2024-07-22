@@ -1,13 +1,20 @@
-FROM python:3.9
+FROM python:3.8
+
+LABEL maintainer="vladosmen29@gmial.com"
+
+ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app/
 
-ENV PYTHONUNBUFFERED 1
+COPY req.txt .
 
-COPY req.txt /app/
+RUN apt-get update &&  apt-get upgrade -y
+RUN pip install -r req.txt
 
 COPY . /app/
 
-RUN pip install --no-cache-dir -r /app/req.txt && python3 manage.py collectstatic
+VOLUME ["/app/staticfiles", "/app/media"]
 
-RUN python3 manage.py makemigrations
+EXPOSE 8008
+
+CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8008", "--timeout", "10000", "--limit-request-field_size", "16384", "--workers", "2"]
